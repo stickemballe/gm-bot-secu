@@ -14,14 +14,14 @@ if not BOT_TOKEN or not CAPTCHA_SECRET_KEY:
     raise ValueError("Les secrets du bot ou du captcha sont manquants dans .env")
 
 # L'URL de la boutique principale (la Mini App)
-MINIAPP_URL = 'https://www.dws75shop.com/'
+MINIAPP_URL = 'https://gmshop.tilda.ws/'
 # L'URL de la page de vérification qui s'ouvrira en Mini App
-BOT_VERIFY_URL = 'https://www.dws75shop.com/bot-verify' # Changez si votre URL est différente
+BOT_VERIFY_URL = 'https://gmshop.tilda.ws/verif' # Changez si votre URL est différente
 
-IMAGE_ACCUEIL_URL = 'https://file.garden/aIhdnTgFPho75N46/image-acceuil-bot-tlgrm.jpg'
-WHATSAPP_LINK = 'https://wa.me/33777824705'
-WHATSAPP_SAV_LINK = 'https://wa.me/33620832623'
-TELEGRAM_SECOURS_URL = 'https://t.me/+jh3S21ricEY5N2U8'
-POTATO_URL = 'https://dlptm.org/DWS75'
-INSTAGRAM_URL = 'https://www.instagram.com/dryweedshopsigsh=aTR3b3lyb2Y3ZjJo&utm_source=qr'
-SNAPCHAT_URL = 'https://snapchat.com/t/3ZCdfgNA'
+IMAGE_ACCUEIL_URL = ''
+WHATSAPP_LINK = 'https://wa.me/33621884535'
+WHATSAPP_SAV_LINK = ''
+TELEGRAM_SECOURS_URL = ''
+POTATO_URL = ''
+INSTAGRAM_URL = ''
+SNAPCHAT_URL = ''
