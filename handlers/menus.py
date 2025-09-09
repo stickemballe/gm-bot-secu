@@ -28,7 +28,6 @@ def contacts_keyboard() -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(row_width=1)
     kb.add(
         InlineKeyboardButton("☎️ WhatsApp Standard ☎️", url=config.WHATSAPP_LINK),
-        InlineKeyboardButton("🆘 S.A.V  🆘", url=config.WHATSAPP_SAV_LINK)
     )
     kb.row(
         InlineKeyboardButton("◀️ Retour", callback_data="menu_principal"),
@@ -39,11 +38,7 @@ def contacts_keyboard() -> InlineKeyboardMarkup:
 def liens_keyboard() -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(row_width=1)
     kb.add(
-        InlineKeyboardButton("📲 Canal Telegram Secours 📲", url=config.TELEGRAM_SECOURS_URL),
-        InlineKeyboardButton("🥔 Potato 🥔", url=config.POTATO_URL),
         InlineKeyboardButton("☎️ WhatsApp Standard ☎️", url=config.WHATSAPP_LINK),
-        InlineKeyboardButton("📸 Instagram 📸", url=config.INSTAGRAM_URL),
-        InlineKeyboardButton("👻 Snapchat 👻", url=config.SNAPCHAT_URL)
     )
     kb.row(
         InlineKeyboardButton("◀️ Retour", callback_data="menu_principal"),
