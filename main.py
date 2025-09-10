@@ -14,7 +14,7 @@ from handlers.menus import menu_principal_keyboard, verification_keyboard, infos
 
 bot = telebot.TeleBot(config.BOT_TOKEN)
 app = Flask('')
-allowed_origins = ["https://www.dws75shop.com", "https://dws75shop.com"]
+allowed_origins = ["https://www.gm75shop.com", "https://gm75shop.com/"]
 CORS(app, resources={r"/webapp/*": {"origins": allowed_origins}})
 
 # --- Mémoire locale des messages envoyés par le bot (pour les effacer ensuite)
@@ -248,8 +248,6 @@ def callback_handler(call):
             "Nous livrons dans toute l'<b>Île-de-France</b> pour toute commande de 120€ ou plus.\n\n"
             "<b><u>📍 Meet-up (remise en main propre) :</u></b>\n"
             "Minimum de commande de 50€.\n\n"
-            "<b><u>🆘 Service Après-Vente (S.A.V) :</u></b>\n"
-            "Pour toute réclamation, contactez le +33 6 20 83 26 23.\n\n"
             "Merci de votre confiance ! 🏆"
         )
         try:
