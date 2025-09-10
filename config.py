@@ -20,8 +20,3 @@ BOT_VERIFY_URL = 'https://gm75shop.com/verif' # Changez si votre URL est différ
 
 IMAGE_ACCUEIL_URL = ''
 WHATSAPP_LINK = 'https://wa.me/33621884535'
-WHATSAPP_SAV_LINK = ''
-TELEGRAM_SECOURS_URL = ''
-POTATO_URL = ''
-INSTAGRAM_URL = ''
-SNAPCHAT_URL = ''
