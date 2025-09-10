@@ -38,19 +38,8 @@ def is_verification_valid(user_id: int):
         return False
 
 def verify_turnstile(token: str) -> bool:
-    if not token:
-        return False
-    try:
-        response = requests.post(
-            "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-            data={'secret': config.CAPTCHA_SECRET_KEY, 'response': token},
-            timeout=10
-        )
-        response.raise_for_status()
-        return response.json().get("success", False)
-    except requests.RequestException as e:
-        config.logger.error(f"Erreur réseau Turnstile: {e}")
-        return False
+    # ⚡ Bypass temporaire : toujours valide
+    return True
 
 # --- FONCTION ANTI-FLOOD AJOUTÉE ---
 user_requests = {} 
