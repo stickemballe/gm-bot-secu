@@ -14,9 +14,9 @@ if not BOT_TOKEN or not CAPTCHA_SECRET_KEY:
     raise ValueError("Les secrets du bot ou du captcha sont manquants dans .env")
 
 # L'URL de la boutique principale (la Mini App)
-MINIAPP_URL = 'http://gmshop.tilda.ws/'
+MINIAPP_URL = 'https://gm75shop.com/'
 # L'URL de la page de vérification qui s'ouvrira en Mini App
-BOT_VERIFY_URL = 'http://gmshop.tilda.ws/verif' # Changez si votre URL est différente
+BOT_VERIFY_URL = 'https://gm75shop.com/verif' # Changez si votre URL est différente
 
 IMAGE_ACCUEIL_URL = ''
 WHATSAPP_LINK = 'https://wa.me/33621884535'
