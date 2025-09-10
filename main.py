@@ -110,24 +110,14 @@ def get_short_code():
 def home():
     return "Bot et API de session actifs."
 
-@bot.message_handler(commands=['start', 'menu'])
+@bot.message_handler(commands=['start'])
 def command_start(message):
     user_id = message.from_user.id
     if is_flooding(user_id):
         return
+    # BYPASS TEMPORAIRE DE LA VÉRIFICATION : on envoie toujours le menu principal
+    send_welcome_message(message.chat.id, user_id)
 
-    name = _display_name_from_message(message)
-
-    if is_verification_valid(user_id):
-        send_welcome_message(message.chat.id, user_id)
-    else:
-        texte_prompt = (
-            f"🔒 <b>Bienvenue, {name} !</b>\n\n"
-            "Pour accéder au bot, une vérification rapide est nécessaire.\n\n"
-            "Appuie sur le bouton ci-dessous pour lancer la vérification."
-        )
-        # On nettoie puis on affiche uniquement le prompt de vérif
-        send_clean_message(message.chat.id, texte_prompt, reply_markup=verification_keyboard(), parse_mode='HTML')
 
 @bot.message_handler(commands=['aide'])
 def command_aide(message):
