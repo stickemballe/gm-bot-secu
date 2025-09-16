@@ -20,6 +20,9 @@ CAPTCHA_SECRET_KEY = os.getenv("CAPTCHA_SECRET_KEY")
 _raw_admins = os.getenv("ADMIN_IDS", os.getenv("ADMIN_ID", "")).replace(" ", "")
 ADMIN_IDS = [int(x) for x in _raw_admins.split(",") if x]
 
+# ✅ Compat descendante : expose aussi ADMIN_ID si l'ancien code l'utilise
+ADMIN_ID = int(os.getenv("ADMIN_ID", str(ADMIN_IDS[0]) if ADMIN_IDS else "0"))
+
 # URLs de ton projet
 MINIAPP_URL = "https://gm75shop.com/"
 BOT_VERIFY_URL = "https://gm75shop.com/bot-verify"
