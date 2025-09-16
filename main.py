@@ -134,6 +134,13 @@ def home():
 
 @bot.message_handler(commands=['start', 'menu'])
 def command_start(message):
+    # ➜ AJOUT : enregistrer l'utilisateur dès /start
+    try:
+        username = f"@{message.from_user.username}" if getattr(message.from_user, "username", None) else None
+        upsert_subscriber(message.chat.id, username)
+    except Exception as e:
+        config.logger.error(f"upsert_subscriber (/start) failed for {message.chat.id}: {e}")
+
     user_id = message.from_user.id
     if is_flooding(user_id):
         return
@@ -182,6 +189,13 @@ En cas de problème, vous pouvez toujours relancer le processus avec la commande
 
 @bot.message_handler(func=lambda message: message.text and message.text.isdigit() and len(message.text) == 6)
 def handle_short_code(message):
+    # ➜ AJOUT : enregistrer aussi ici, au cas où
+    try:
+        username = f"@{message.from_user.username}" if getattr(message.from_user, "username", None) else None
+        upsert_subscriber(message.chat.id, username)
+    except Exception as e:
+        config.logger.error(f"upsert_subscriber (6digits) failed for {message.chat.id}: {e}")
+
     user_id = message.from_user.id
     if is_flooding(user_id):
         return
@@ -251,6 +265,13 @@ def send_welcome_message(chat_id: int, user_id: int):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_handler(call):
+    # ➜ AJOUT : enregistrer l'utilisateur au clic de bouton
+    try:
+        username = f"@{call.from_user.username}" if getattr(call.from_user, "username", None) else None
+        upsert_subscriber(call.message.chat.id, username)
+    except Exception as e:
+        config.logger.error(f"upsert_subscriber (callback) failed for {call.message.chat.id}: {e}")
+
     user_id = call.from_user.id
     if is_flooding(user_id):
         return
