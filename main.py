@@ -11,8 +11,27 @@ from html import escape
 
 from security import verify_turnstile, save_user_verification, is_verification_valid, is_flooding
 from handlers.menus import menu_principal_keyboard, verification_keyboard, infoscommande_keyboard, contacts_keyboard, liens_keyboard
+from db import init_db, upsert_subscriber, get_all_chat_ids
 
 bot = telebot.TeleBot(config.BOT_TOKEN)
+init_db()
+
+# --- Enregistrement (BDD) de tout utilisateur qui parle au bot ---
+@bot.message_handler(content_types=[
+    "text","photo","video","animation","document","audio","voice","video_note",
+    "sticker","location","contact"
+])
+def _track_user(message):
+    """
+    Ce handler ne répond rien : il enregistre juste l'utilisateur en BDD.
+    """
+    try:
+        username = f"@{message.from_user.username}" if getattr(message.from_user, "username", None) else None
+        upsert_subscriber(message.chat.id, username)
+    except Exception as e:
+        config.logger.error(f"upsert_subscriber failed for {message.chat.id}: {e}")
+    # NE RIEN ENVOYER ICI
+
 app = Flask('')
 allowed_origins = ["https://www.gm75shop.com", "https://gm75shop.com"]
 CORS(app, resources={r"/webapp/*": {"origins": allowed_origins}})
@@ -308,6 +327,33 @@ def callback_handler(call):
 
     else:
         bot.answer_callback_query(call.id, "Fonction en cours de développement.", show_alert=True)
+
+# --- ici on colle /broadcast ---
+from config import is_admin
+from threading import Thread
+import time
+
+@bot.message_handler(commands=["broadcast", "diffuse"])
+def handle_broadcast(message):
+    ...
+    # (bloc complet donné avant)
+    ...
+    
+@bot.message_handler(commands=["whoami"])
+def whoami(message):
+    from config import is_admin
+    bot.reply_to(
+        message,
+        f"Ton ID: {message.from_user.id}\nAdmin: {is_admin(message.from_user.id)}"
+    )
+
+@bot.message_handler(commands=["whoami"])
+def whoami(message):
+    from config import is_admin
+    bot.reply_to(
+        message,
+        f"Ton ID: {message.from_user.id}\nAdmin: {is_admin(message.from_user.id)}"
+    )
 
 # --- Lancement ---
 def run_flask():
