@@ -17,10 +17,13 @@ bot = telebot.TeleBot(config.BOT_TOKEN)
 init_db()
 
 # --- Enregistrement (BDD) de tout utilisateur qui parle au bot ---
-@bot.message_handler(content_types=[
-    "text","photo","video","animation","document","audio","voice","video_note",
-    "sticker","location","contact"
-])
+@bot.message_handler(
+    content_types=[
+        "text","photo","video","animation","document","audio","voice","video_note",
+        "sticker","location","contact"
+    ],
+    func=lambda m: not (getattr(m, "text", None) and m.text.startswith('/'))  # ⬅️ ignore les commandes
+)
 def _track_user(message):
     """
     Ce handler ne répond rien : il enregistre juste l'utilisateur en BDD.
@@ -335,9 +338,52 @@ import time
 
 @bot.message_handler(commands=["broadcast", "diffuse"])
 def handle_broadcast(message):
-    ...
-    # (bloc complet donné avant)
-    ...
+    if not is_admin(message.from_user.id):
+        return bot.reply_to(message, "⛔ Commande réservée aux administrateurs.")
+
+    args = message.text.split(maxsplit=1)
+
+    # Aide si pas de texte et pas de réponse à un message
+    if len(args) < 2 and not message.reply_to_message:
+        return bot.reply_to(
+            message,
+            "Utilisation :\n"
+            "• `/broadcast votre texte`\n"
+            "• ou répondez à un message (texte/photo/vidéo) avec `/broadcast`"
+        )
+
+    # ✅ Destinataires depuis la BDD
+    targets = get_all_chat_ids()
+    if not targets:
+        return bot.reply_to(message, "Aucun utilisateur enregistré : demande aux gens d’écrire au bot une première fois.")
+
+    bot.reply_to(message, f"🚀 Diffusion en cours vers {len(targets)} utilisateurs…")
+
+    def run():
+        sent, failed = 0, 0
+        if len(args) > 1:  # envoi texte
+            text_to_send = args[1].strip()
+            for cid in targets:
+                try:
+                    bot.send_message(cid, text_to_send, parse_mode="HTML")
+                    sent += 1
+                except Exception:
+                    failed += 1
+                time.sleep(0.05)  # anti-flood ~20 msg/s
+        else:  # copie du message répondu (garde médias + légende)
+            src = message.reply_to_message
+            for cid in targets:
+                try:
+                    bot.copy_message(cid, src.chat.id, src.message_id)
+                    sent += 1
+                except Exception:
+                    failed += 1
+                time.sleep(0.05)
+
+        bot.send_message(message.chat.id, f"✅ Envoyés: {sent} • ❌ Échecs: {failed}")
+
+    Thread(target=run, daemon=True).start()
+
     
 @bot.message_handler(commands=["whoami"])
 def whoami(message):
@@ -347,13 +393,14 @@ def whoami(message):
         f"Ton ID: {message.from_user.id}\nAdmin: {is_admin(message.from_user.id)}"
     )
 
-@bot.message_handler(commands=["whoami"])
-def whoami(message):
-    from config import is_admin
-    bot.reply_to(
-        message,
-        f"Ton ID: {message.from_user.id}\nAdmin: {is_admin(message.from_user.id)}"
-    )
+@bot.message_handler(commands=["start","menu","aide","whoami","broadcast","diffuse"])
+def _track_user_commands(message):
+    try:
+        username = f"@{message.from_user.username}" if getattr(message.from_user, "username", None) else None
+        upsert_subscriber(message.chat.id, username)
+    except Exception as e:
+        config.logger.error(f"upsert_subscriber (cmd) failed for {message.chat.id}: {e}")
+    # On ne répond PAS ici (les vrais handlers de commandes répondent)
 
 # --- Lancement ---
 def run_flask():
