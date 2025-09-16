@@ -19,10 +19,10 @@ init_db()
 # --- Enregistrement (BDD) de tout utilisateur qui parle au bot ---
 @bot.message_handler(
     content_types=[
-        "text","photo","video","animation","document","audio","voice","video_note",
+        # "text",  # ⬅️ on retire le texte pour ne pas intercepter le code 6 chiffres / commandes
+        "photo","video","animation","document","audio","voice","video_note",
         "sticker","location","contact"
-    ],
-    func=lambda m: not (getattr(m, "text", None) and m.text.startswith('/'))  # ⬅️ ignore les commandes
+    ]
 )
 def _track_user(message):
     """
@@ -231,6 +231,23 @@ def send_welcome_message(chat_id: int, user_id: int):
         )
     except Exception as e:
         config.logger.error(f"Impossible d'envoyer le message de bienvenue à {chat_id}: {e}")
+        # 🔁 Fallback : afficher au moins un message texte + clavier
+        try:
+            send_clean_message(
+                chat_id,
+                texte_accueil,
+                parse_mode='HTML',
+                reply_markup=menu_principal_keyboard(user_id)
+            )
+        except Exception as e2:
+            config.logger.error(f"Impossible d'envoyer le texte d'accueil à {chat_id}: {e2}")
+            try:
+                send_clean_message(
+                    chat_id,
+                    "Bienvenue ! (mode secours)\nLe menu n'a pas pu s'afficher. Réessaie avec /menu."
+                )
+            except Exception:
+                pass
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_handler(call):
